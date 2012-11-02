@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Twitter search</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>
+      $(function(){
+        function twitterSearch(){
+          $("#search-results").html("Loading...");
+          var searchQuery = $("#search-query").val();
+          $.ajax({
+            url: "http://search.twitter.com/search.json?q=" + searchQuery,
+            dataType: "jsonp"
+          }).done(twitterPrintSearchResults);
+        }
+
+        function twitterPrintSearchResults(data){
+          var resultsContainer = $("<ul></ul>");
+          for(var i = 0; i < data.results.length; i++){
+            var result = data.results[i];
+            resultsContainer.append("<li>" + result.text + "</li>");
+          }
+          $("#search-results").html(resultsContainer);
+        }
+
+        $("#search-form").submit(function(event){
+          event.preventDefault();
+          twitterSearch();
+        });
+
+        $("#search-query").focus();
+      });
+    </script>
+  </head>
+  <body>
+    <h2>Twitter search</h2>
+    <form id="search-form">
+      <p><input type="text" id="search-query" placeholder="Search query"/>&nbsp;<input type="submit" value="Search"/></p>
+    </form>
+    <h2>Search results</h2>
+    <div id="search-results"></div>
+  </body>
+</html>
