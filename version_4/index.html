@@ -1,0 +1,92 @@
+<html>
+  <head>
+    <title>Twitter search</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>
+      window.app = {
+        models: {},
+        views: {}
+      };
+
+      app.models.DataModel = (function(){
+        function DataModel(){}
+
+        DataModel.prototype.getData = function(url, data){
+          if(data === null){
+            data = {}
+          }
+          return $.ajax(url, data);
+        };
+
+        return DataModel;
+      })();
+
+      app.models.TwitterModel = (function(_super){
+
+        function TwitterModel(){
+          return _super.prototype.constructor.apply(this, arguments);
+        }
+
+        $.extend(TwitterModel.prototype, _super.prototype);
+
+        TwitterModel.prototype.search = function(query){
+          var url = "http://search.twitter.com/search.json?q=" + query;
+          this.getData(url, { dataType: "jsonp" }).done(function(data){
+            $(window).trigger("TwitterModel::search", data);
+          });
+        };
+
+        return TwitterModel;
+      })(app.models.DataModel);
+
+      app.views.TwitterView = (function(){
+        function TwitterView(){}
+
+        var twitterModel = new app.models.TwitterModel();
+
+        TwitterView.prototype.render = function(){
+          var that = this;
+          $("#search-query").focus();
+          $("#search-form").submit(function(event){
+            event.preventDefault();
+            that.search();
+          });
+
+          $(window).on("TwitterModel::search", printSearchResults);
+        };
+
+        TwitterView.prototype.search = function(){
+          $("#search-results").html("Loading...");
+          var searchQuery = $("#search-query").val();
+
+          twitterModel.search(searchQuery);
+        };
+
+        function printSearchResults(event, data){
+          var resultsContainer = $("<ul></ul>");
+          for(var i = 0; i < data.results.length; i++){
+            var result = data.results[i];
+            resultsContainer.append("<li>" + result.text + "</li>");
+          }
+          $("#search-results").html(resultsContainer);
+        }
+
+        return TwitterView;
+      })();
+
+      $(function(){
+        var twitterView = new app.views.TwitterView();
+        twitterView.render();
+      });
+
+    </script>
+  </head>
+  <body>
+    <h2>Twitter search</h2>
+    <form id="search-form">
+      <p><input type="text" id="search-query" placeholder="Search query"/>&nbsp;<input type="submit" value="Search"/></p>
+    </form>
+    <h2>Search results</h2>
+    <div id="search-results"></div>
+  </body>
+</html>
