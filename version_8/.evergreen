@@ -1,0 +1,7 @@
+require "capybara-webkit"
+
+Evergreen.configure do |config|
+  config.driver = :webkit
+  config.public_dir = "assets/javascripts/app"
+  config.spec_dir = "specs/javascripts/app"
+end

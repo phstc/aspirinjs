@@ -1,0 +1,19 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>Evergreen</title>
+    <link rel="stylesheet" type="text/css" href="<%= url('/jasmine/jasmine.css') %>"/>
+    <link rel="stylesheet" type="text/css" href="<%= url('/resources/evergreen.css') %>"/>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  </head>
+  <body>
+    <%= yield %>
+
+    <div id="footer">
+      Powered by <a href="http://github.com/jnicklas/evergreen">Evergreen</a>.
+      Evergreen is sponsored by <a class="elabs" href="http://elabs.se"><img alt="Elabs" src="<%= url('/resources/elabs.png') %>"> Elabs</a>.
+    </div>
+  </body>
+</html>
+  
