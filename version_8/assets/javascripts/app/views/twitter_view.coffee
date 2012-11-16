@@ -21,3 +21,7 @@ class app.views.TwitterView
       resultsContainer.append "<li>#{result.text}</li>"
     $("#search-results").html resultsContainer
 
+$ ->
+  twitterView = new app.views.TwitterView
+  twitterView.render()
+
